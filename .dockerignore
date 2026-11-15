@@ -1,0 +1,10 @@
+.git
+.gitignore
+.idea
+target
+.mvn
+*.md
+!README.md
+load-test
+production
+CLAUDE.md

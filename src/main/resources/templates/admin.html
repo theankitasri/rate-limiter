@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Rate Limiter Admin</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}"/>
+</head>
+<body>
+<header>
+    <h1>Distributed Rate Limiter</h1>
+    <p class="subtitle">Standalone service — front-mount before any Spring Boot app</p>
+</header>
+
+<main>
+    <section class="stats">
+        <div class="stat-tile">
+            <span class="stat-value" th:text="${trackedClients}">0</span>
+            <span class="stat-label">Clients tracked</span>
+        </div>
+    </section>
+
+    <section>
+        <h2>Top clients by usage</h2>
+        <p class="hint">
+            Live values refresh on each page load. Full per-client details
+            available via <code>GET /ratelimit/check/{clientId}</code>.
+        </p>
+        <table th:if="${!topClients.isEmpty()}">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Client ID</th>
+                <th>Used</th>
+                <th>Limit</th>
+                <th>Remaining</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="c, iter : ${topClients}">
+                <td th:text="${iter.index + 1}">1</td>
+                <td th:text="${c.clientId}">client</td>
+                <td th:text="${c.used}">0</td>
+                <td th:text="${c.limit}">100</td>
+                <td th:text="${c.remaining}">100</td>
+            </tr>
+            </tbody>
+        </table>
+        <p th:if="${topClients.isEmpty()}" class="empty">No client data yet</p>
+    </section>
+</main>
+
+<footer>
+    <p>
+        Actuator: <a th:href="@{/actuator/health}">/actuator/health</a>
+        &middot;
+        Prometheus: <a th:href="@{/actuator/prometheus}">/actuator/prometheus</a>
+    </p>
+</footer>
+</body>
+</html>

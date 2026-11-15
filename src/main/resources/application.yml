@@ -1,0 +1,52 @@
+spring:
+  application:
+    name: distributed-rate-limiter
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      timeout: 2000ms
+  security:
+    user:
+      name: admin
+      password: ${ADMIN_PASSWORD:admin123}
+
+server:
+  port: ${SERVER_PORT:8080}
+
+ratelimiter:
+  default-limit: 100
+  default-window-seconds: 60
+  algorithm: SLIDING_WINDOW   # or FIXED_WINDOW, TOKEN_BUCKET
+  client: LETTUCE             # or JEDIS
+  retry-after-seconds: 30
+  jwt-secret: ${JWT_SECRET:please-change-this-to-a-256bit-secret}
+  admin-users:
+    admin: ${ADMIN_PASSWORD:admin123}
+  token-bucket:
+    # Optional override; defaults to default-limit / default-window-seconds
+    refill-rate-per-second: ""
+  jedis:
+    max-total: 50
+    max-idle: 10
+    min-idle: 5
+    block-if-exhausted: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+logging:
+  level:
+    com.ratelimiter: INFO
+    org.springframework.security: WARN
